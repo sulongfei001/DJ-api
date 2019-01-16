@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>webSocket测试</title>
+</head>
+<body onbeforeunload="close()">
+<button onclick="connect()">测试</button>
+</body>
+<script type="text/javascript">
+    var socket;
+    // 心跳检测，每隔一段时间检测连接状态，如果处于连接中，就像Server主动发送消息，来重置Server段与客户端的最大连接时间，如果已经断开，发起重连
+    var heartCheck = {
+        // 9分钟发起一次心跳，比Server端设置的连接时间稍微小一点，在接近断开的情况下以通信的方式去重置连接时间
+        timeout: 550000,
+        serverTimeoutObj: null,
+        reset: function () {
+            clearTimeout(this.serverTimeoutObj);
+            return this;
+        },
+        start: function () {
+            this.serverTimeoutObj = setInterval(function () {
+                if (socket.readyState == 1) {
+                    console.log("连接状态，发送消息保持连接");
+                    socket.send("ping");
+                    // 如果获取到消息，说明连接正常，重置心跳检测
+                    heartCheck.reset().start();
+                } else {
+                    console.log("断开连接，尝试重连");
+                    connect();
+                }
+            }, this.timeout)
+        }
+    };
+
+    function connect() {
+        if (typeof WebSocket == "undefined") {
+            console.log("不支持WebSocket！");
+        } else {
+            console.log("支持WebSocket！");
+        }
+        if (socket && socket.readyState == 1) {
+            return;
+        }
+        socket = new WebSocket("ws://47.99.57.113:10011/DJ/websocket");
+        //socket = new WebSocket("ws://localhost:10011/DJ/websocket");
+        // 打开事件
+        socket.onopen = function () {
+            heartCheck.reset().start();
+            console.log("socket 已打开");
+        };
+        // 获得消息事件
+        socket.onmessage = function (msg) {
+            heartCheck.reset().start();
+            console.log(msg.data);
+        };
+        // 关闭事件
+        socket.onclose = function () {
+            console.log("Socket 已关闭")
+        };
+        // 发生错误
+        socket.onerror = function () {
+            console.log("Socket 发生了错误")
+        };
+    }
+    
+    function pressureTest() {
+        for (var i =0;i<300;i++){
+            connect()
+        }
+    }
+
+    function close() {
+        socket.close();
+    }
+
+</script>
+</html>

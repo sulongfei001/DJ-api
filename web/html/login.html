@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DJ登录</title>
+
+    <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+    <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <script type="text/javascript" src="../js/jquery/jquery.md5.js"></script>
+    <script type="text/javascript" src="../js/jquery/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../js/7x-networks/restful.js"></script>
+    <script type="text/javascript" src="../js/layer/layer.js"></script>
+    <link href="../css/common.css" rel="stylesheet">
+</head>
+<style>
+    .container {
+        padding-top: 100px;
+    }
+
+    .login-input {
+        margin-top: 60px;
+        margin-bottom: 60px;
+    }
+
+    #passWord {
+        margin-top: 20px;
+    }
+
+    button {
+        margin: 20px 0;
+    }
+</style>
+<body>
+<div class="container">
+    <form>
+        <div class="form-group">
+            <h2 class="form-signin-heading">请DJ登陆</h2>
+            <div class="login-input">
+                <input type="text" class="form-control" id="userName" placeholder="用户名称">
+                <input type="password" class="form-control" id="passWord" placeholder="用户密码">
+            </div>
+            <button class="btn btn-lg btn-primary btn-block" type="button" onclick="login()">登录</button>
+        </div>
+    </form>
+</div>
+</body>
+<script type="text/javascript">
+    function login() {
+        var username = $("#userName").val();
+        var password = $("#passWord").val();
+        if (username == "") {
+            $("#userName").focus();
+            layer.msg("账户不能为空！");
+            return;
+        }
+        if (password == "") {
+            $("#txtPassword1").focus();
+            layer.msg("密码不能为空！");
+            return;
+        }
+        layer.msg("登录中");
+        setTimeout(function () {
+            password = $.md5($.md5(password));
+            generateToken(username, password);
+        }, 500);
+    }
+
+</script>
+</html>
