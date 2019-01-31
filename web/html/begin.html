@@ -1,0 +1,64 @@
+<style type="text/css">
+    .main {
+        padding: 150px 10% 0 10%;
+    }
+
+    .header {
+        width: 100%;
+        height: 8rem;
+        text-align: center;
+        color: grey;
+        font-size: 3rem;
+        font-weight: bold;
+    }
+
+    .begin {
+        width: 100%;
+        height: 100px;
+        font-size: 4rem;
+        font-weight: bold;
+    }
+
+    .text {
+        padding-top: 20px;
+        font-size: 2.5rem;
+        color: red;
+        text-align: center;
+    }
+</style>
+<div class="container">
+    <div class="main">
+        <div class="header">
+            Swing Controller
+        </div>
+        <button type="button" class="btn btn-default begin" onclick="startGame()">
+            开始
+        </button>
+    </div>
+    <div class="text">点击开始后，所有用户游戏将全部开始，请谨慎操作</div>
+</div>
+<script type="text/javascript">
+    (function () {
+        verifyLogin();
+        var url = "http://47.99.57.113:10011/DJ/progress/status";
+        get(url, function (res) {
+            if (res.status) {
+                loadPage("manageDJ.html");
+            }
+        })
+    })();
+
+    function startGame() {
+        var url = "http://47.99.57.113:10011/DJ/progress/start_game";
+        myConfirm("所有用户游戏将全部开始<br>请谨慎操作", function () {
+            get(url, function (res) {
+                console.log(res);
+                if (res.operationResult) {
+                    loadPage("manageDJ.html");
+                }
+            });
+        });
+    }
+
+</script>
+</html>

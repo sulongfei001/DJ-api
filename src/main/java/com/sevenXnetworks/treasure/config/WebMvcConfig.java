@@ -25,6 +25,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
                 .addPathPatterns("/**")
                 .excludePathPatterns("/oauth/token/**")
                 .excludePathPatterns("/websocket")
+                .excludePathPatterns("/grade")
         ;
         super.addInterceptors(registry);
     }

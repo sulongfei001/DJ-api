@@ -30,10 +30,6 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-
-        // 解决跨域问题
-        crossDomain(response);
-
         String requstURL = request.getRequestURL().toString();
         String access_token = request.getParameter("access_token");
         logger.info("requstURL:     " + requstURL);

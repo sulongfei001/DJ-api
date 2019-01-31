@@ -1,0 +1,202 @@
+<style type="text/css">
+
+    .logout {
+        margin-top: 10px;
+        height: 20px;
+        text-align: right;
+        color: gray;
+    }
+
+    #userName {
+        height: 50px;
+        font-size: 3rem;
+    }
+
+    .btn-splash {
+        height: 100px;
+        width: 100%;
+        font-size: 2.5rem;
+    }
+
+    .btn-switch {
+        height: 100px;
+        width: 100%;
+        font-size: 2.5rem;
+        float: right;
+    }
+
+    .navbar-fixed-bottom {
+        margin: 0 15px;
+        z-index: 1;
+    }
+
+    .btn-end {
+        height: 70px;
+        font-size: 3rem;
+        width: 100%;
+    }
+
+    .text {
+        float: left;
+        text-align: center;
+        font-size: 2rem;
+        color: gray;
+        width: 100%;
+        padding: 10px 0;
+    }
+
+</style>
+<div class="container">
+    <div class="logout">
+        <label onclick="confirmLogout()">
+            <span class="glyphicon glyphicon-star" aria-hidden="true"></span> 退出
+        </label>
+    </div>
+    <div class="form-group">
+        <div class="text">最多12个英文或4个汉字</div>
+        <input type="text" class="form-control" id="userName" onchange="inputChange(this);" placeholder="请出入DJ名字">
+    </div>
+    <button class="btn btn-default btn-splash" type="button" onclick="splash_screen(this)">
+        闪&nbsp;&nbsp;&nbsp;屏<br><span id="splashTimeOut"></span></button>
+    <div class="text">需要有DJ名字才可以操作闪屏<br>每次闪屏后将会有冷却时间</div>
+    <button class="btn btn-default btn-switch" type="button" onclick="switch_mode(this)">
+        <span id="modeText">切换模式至统一</span><br><span id="timeOut"></span></button>
+    <div class="text">每次切换统一/随机模式<br>每次切换后将会有冷却时间</div>
+    <div class="navbar-fixed-bottom">
+        <button class="btn btn-default btn-end" type="button" onclick="end_game(this)">结&nbsp;&nbsp;&nbsp;束</button>
+        <div class="text">结束当前游戏，进入结算，谨慎操作</div>
+    </div>
+</div>
+<script type="text/javascript">
+    (function () {
+        verifyLogin();
+        var url = "http://47.99.57.113:10011/DJ/progress/status";
+        get(url, function (res) {
+            if (!res.status) {
+                loadPage("begin.html");
+            }
+        })
+    })();
+    var splash_screen_option = true;
+    var switch_mode_option = true;
+    var switch_mode_status = 0;
+
+    function limitName(userName) {
+        var totalLength = 0;
+        var charCode;
+        var i = 0;
+        for (; i < userName.length; i++) {
+            charCode = userName.charCodeAt(i);
+            if (charCode < 0x007f) {
+                totalLength++;
+            } else if ((0x0080 <= charCode) && (charCode <= 0x07ff)) {
+                totalLength += 2;
+            } else if ((0x0800 <= charCode) && (charCode <= 0xffff)) {
+                totalLength += 3;
+            } else {
+                totalLength += 4;
+            }
+            if (totalLength >= 13) {
+                break;
+            }
+        }
+        return userName.substring(0,i);
+    }
+
+    function inputChange() {
+        var userName = $("#userName").val();
+        $("#userName").val(limitName(userName));
+    }
+
+
+    function splash_screen(obj) {
+        var userName = $("#userName").val();
+        if (userName.length == 0) {
+            alert("请输入姓名！");
+            return;
+        } else if (userName.getBytesLength() > 12) {
+            alert("字数超出限制！");
+            return;
+        }
+        var url = "http://47.99.57.113:10011/DJ/splash_screen?userName=" + userName;
+        if (splash_screen_option) {
+            get(url, function (res) {
+                var wait_time = 10;
+                var timer;
+                $("#splashTimeOut").html("（" + wait_time + "秒）");
+                timer = setInterval(function () {
+                    wait_time = wait_time - 1;
+                    $("#splashTimeOut").html("（" + wait_time + "秒）");
+                    if (wait_time == 0) {
+                        clearInterval(timer);
+                        $("#splashTimeOut").html("");
+                    }
+                }, 1000);
+                setIntervals.push(timer);
+                console.log(res);
+                splash_screen_option = false;
+                $(obj).attr("disabled", "disabled");
+                alert("发送成功！");
+                setTimeout(function () {
+                    splash_screen_option = true;
+                    $(obj).removeAttr("disabled");
+                }, 10000);
+            })
+        }
+    }
+
+    function switch_mode(obj) {
+        var url = "http://47.99.57.113:10011/DJ/switch_mode";
+        if (switch_mode_option) {
+            get(url, function (res) {
+                var wait_time = 10;
+                var timer;
+                if (switch_mode_status == 0) {
+                    switch_mode_status = 1;
+                    $("#modeText").html("切换模式至随机");
+                } else if (switch_mode_status == 1) {
+                    switch_mode_status = 0;
+                    $("#modeText").html("切换模式至统一");
+                }
+                $("#timeOut").html("（" + wait_time + "秒）");
+                timer = setInterval(function () {
+                    wait_time = wait_time - 1;
+                    $("#timeOut").html("（" + wait_time + "秒）");
+                    if (wait_time == 0) {
+                        clearInterval(timer);
+                        $("#timeOut").html("");
+                    }
+                }, 1000);
+                setIntervals.push(timer);
+                console.log(res);
+                switch_mode_option = false;
+                $(obj).attr("disabled", "disabled");
+                alert("发送成功！");
+                setTimeout(function () {
+                    switch_mode_option = true;
+                    $(obj).removeAttr("disabled");
+                }, 10000);
+            })
+        }
+    }
+
+
+    function end_game() {
+        var url = "http://47.99.57.113:10011/DJ/progress/end_game";
+        myConfirm("结束当前游戏，进入结算<br>请谨慎操作", function () {
+            get(url, function (res) {
+                if (res.operationResult) {
+                    loadPage("begin.html");
+                }
+            });
+        });
+    }
+
+    function confirmLogout() {
+        myConfirm("你将退出本次登录<br>请谨慎操作", function () {
+            logout();
+        })
+    }
+
+</script>
+</html>

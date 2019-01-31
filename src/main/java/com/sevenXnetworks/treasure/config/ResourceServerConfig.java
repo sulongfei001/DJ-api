@@ -15,10 +15,12 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         http.requestMatchers()
                 .antMatchers("/switch_mode")
                 .antMatchers("/splash_screen")
+                .antMatchers("/progress/**")
                 .and()
                 .authorizeRequests()
                 .antMatchers("/switch_mode").hasAnyRole("MANAGER")
                 .antMatchers("/splash_screen").hasAnyRole("MANAGER")
+                .antMatchers("/progress/**").hasAnyRole("MANAGER")
         ;
 
     }

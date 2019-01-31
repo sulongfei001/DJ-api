@@ -43,7 +43,6 @@
             return;
         }
         socket = new WebSocket("ws://47.99.57.113:10011/DJ/websocket");
-        //socket = new WebSocket("ws://localhost:10011/DJ/websocket");
         // 打开事件
         socket.onopen = function () {
             heartCheck.reset().start();

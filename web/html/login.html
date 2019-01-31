@@ -20,6 +20,9 @@
     <link href="../css/common.css" rel="stylesheet">
 </head>
 <style>
+    body{
+        background-color: #333333;
+    }
     .container {
         padding-top: 100px;
     }
@@ -27,6 +30,10 @@
     .login-input {
         margin-top: 60px;
         margin-bottom: 60px;
+    }
+
+    .DJTitle{
+        color: #FFF;
     }
 
     #passWord {
@@ -41,12 +48,12 @@
 <div class="container">
     <form>
         <div class="form-group">
-            <h2 class="form-signin-heading">请DJ登陆</h2>
+            <h2 class="form-signin-heading DJTitle">请DJ登陆</h2>
             <div class="login-input">
                 <input type="text" class="form-control" id="userName" placeholder="用户名称">
                 <input type="password" class="form-control" id="passWord" placeholder="用户密码">
             </div>
-            <button class="btn btn-lg btn-primary btn-block" type="button" onclick="login()">登录</button>
+            <button class="btn btn-lg btn-default btn-block" type="button" onclick="login()">登录</button>
         </div>
     </form>
 </div>

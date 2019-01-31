@@ -17,105 +17,18 @@
     <script type="text/javascript" src="../js/7x-networks/restful.js"></script>
     <script type="text/javascript" src="../js/layer/layer.js"></script>
     <script type="text/javascript" src="../js/7x-networks/main.js"></script>
+    <script type="text/javascript" src="../js/7x-networks/menu.js"></script>
     <link href="../css/common.css" rel="stylesheet">
+    <link href="../css/7x-networks/index.css" rel="stylesheet" type="text/css"/>
 </head>
-<style type="text/css">
-    .logout {
-        margin-top: 30px;
-        margin-bottom: 50px;
-        height: 30px;
-        text-align: right;
-    }
-
-    .input-group {
-        margin-top: 60px;
-        margin-bottom: 60px;
-    }
-
-    button {
-        margin: 20px 0;
-    }
-</style>
 <body>
-<div class="container">
-    <div class="logout">
-        <label onclick="logout()">
-            <span class="glyphicon glyphicon-star" aria-hidden="true"></span> 退出
-        </label>
-    </div>
-    <form class="form-signin">
-        <h2 class="form-signin-heading">DJ管理界面</h2>
-        <div class="input-group">
-            <span class="input-group-addon">输入姓名</span>
-            <input type="text" class="form-control" id="userName" aria-describedby="basic-addon3">
-        </div>
-        <button class="btn btn-lg btn-primary btn-block" type="button" onclick="splash_screen(this)">闪屏</button>
-        <button class="btn btn-lg btn-primary btn-block" type="button" onclick="switch_mode(this)">切换模式</button>
-    </form>
-</div>
+<section id="content"></section>
+<div id="ht_progressbar"><img src="../image/indeterminate.gif"></div>
+<section class="ht_tk_zg"></section>
 </body>
 <script type="text/javascript">
-    var splash_screen_option = true;
-    var switch_mode_option = true;
-
-    window.alert = function (message) {
-        layer.msg(message);
-    };
-
-    function splash_screen(obj) {
-        var userName = $("#userName").val();
-        var url = "http://47.99.57.113:10011/DJ/splash_screen?userName=" + userName;
-        //var url = "http://localhost:10011/DJ/splash_screen?userName=" + userName;
-        if (splash_screen_option) {
-            // ajax(url, "GET", null, false, function (res) {
-            //     console.log(res);
-            //     splash_screen_option = false;
-            //     $(obj).attr("disabled", "disabled");
-            //     alert("发送成功！");
-            //     setTimeout(function () {
-            //         splash_screen_option = true;
-            //         $(obj).removeAttr("disabled");
-            //     }, 10000);
-            // });
-            get(url, function (res) {
-                console.log(res);
-                splash_screen_option = false;
-                $(obj).attr("disabled", "disabled");
-                alert("发送成功！");
-                setTimeout(function () {
-                    splash_screen_option = true;
-                    $(obj).removeAttr("disabled");
-                }, 10000);
-            })
-        }
-    }
-
-    function switch_mode(obj) {
-        var url = "http://47.99.57.113:10011/DJ/switch_mode";
-        //var url = "http://localhost:10011/DJ/switch_mode";
-        if (switch_mode_option) {
-            // ajax(url, "GET", null, false, function (res) {
-            //     console.log(res);
-            //     switch_mode_option = false;
-            //     $(obj).attr("disabled", "disabled");
-            //     alert("发送成功！");
-            //     setTimeout(function () {
-            //         switch_mode_option = true;
-            //         $(obj).removeAttr("disabled");
-            //     }, 10000);
-            // });
-            get(url, function (res) {
-                console.log(res);
-                switch_mode_option = false;
-                $(obj).attr("disabled", "disabled");
-                alert("发送成功！");
-                setTimeout(function () {
-                    switch_mode_option = true;
-                    $(obj).removeAttr("disabled");
-                }, 10000);
-            })
-        }
-    }
-
+    $(document).ready(function () {
+        loadPage("begin.html");
+    });
 </script>
 </html>

@@ -1,5 +1,6 @@
 package com.sevenXnetworks.treasure.web.controller;
 
+import com.sevenXnetworks.treasure.config.BeginTimeConfig;
 import com.sevenXnetworks.treasure.config.WebSocketEncoder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -32,8 +33,12 @@ public class WebSocketServer {
         addOnlineCount();
         log.info("有新连接加入！当前在线人数为" + getOnlineCount());
         try {
-            Map<String, String> map = new HashMap<>();
+            Map<String, Object> map = new HashMap<>();
             map.put("message", "Connect Success");
+            map.put("game_state", BeginTimeConfig.gameState);
+            if (BeginTimeConfig.groupId != null) {
+                map.put("group_id", BeginTimeConfig.groupId);
+            }
             sendMessage(map);
         } catch (IOException | EncodeException ex) {
             log.error("WebSocket IO 异常");
@@ -41,7 +46,8 @@ public class WebSocketServer {
     }
 
     @OnClose
-    public void onClose() {
+    public void onClose() throws IOException {
+        this.session.close();
         webSocketSet.remove(this);
         subOnlineCount();
         log.info("有一链接关闭！当前在线人数" + getOnlineCount());
@@ -71,6 +77,15 @@ public class WebSocketServer {
                 continue;
             }
         }
+    }
+
+    // 游戏结束
+    public static void clearSocket() throws IOException {
+        for (WebSocketServer item : webSocketSet) {
+            item.session.close();
+            webSocketSet.remove(item);
+        }
+        WebSocketServer.onlineCount = 0;
     }
 
     private static synchronized int getOnlineCount() {
